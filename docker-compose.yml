@@ -63,25 +63,25 @@ services:
     build:
       context: ./data_producer
       args:
-        script: normal_transaction_producer.py
+        script: normal_traffic_producer.py
     depends_on:
       - zookeeper
       - broker
     environment:
       - KAFKA_BROKERS=broker:29092
-      - KAFKA_TOPIC=raw_transactions
+      - KAFKA_TOPIC=raw_traffic
 
   hacker-producer:
     build:
       context: ./data_producer
       args:
-        script: hacker_transaction_producer.py
+        script: hacker_traffic_producer.py
     depends_on:
       - zookeeper
       - broker
     environment:
       - KAFKA_BROKERS=broker:29092
-      - KAFKA_TOPIC=raw_transactions
+      - KAFKA_TOPIC=raw_traffic
 
   spark-master:
     build:
@@ -98,7 +98,7 @@ services:
       - "8080:8080"  # Spark master web UI
       - "7077:7077"  # Spark master port
     volumes:
-      - ./data_processor:/opt/spark-apps  # Mount the directory containing fraud_detector.py
+      - ./data_processor:/opt/spark-apps  # Mount the directory containing traffic_detector.py
 
   spark-worker-1:
     build:
@@ -134,12 +134,12 @@ services:
       - "8082:8081"  # Spark worker web UI
     volumes:
       - ./data_processor:/opt/spark-apps
-    command: ["/bin/bash", "-c", "cd /opt/spark-apps/ && /opt/bitnami/spark/bin/spark-submit --master spark://spark-master:7077 --deploy-mode client --packages org.postgresql:postgresql:42.2.23,org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 fraud_detector.py"]
+    command: ["/bin/bash", "-c", "cd /opt/spark-apps/ && /opt/bitnami/spark/bin/spark-submit --master spark://spark-master:7077 --deploy-mode client --packages org.postgresql:postgresql:42.2.23,org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.2 traffic_detector.py"]
 
   timescaledb:
     image: timescale/timescaledb:latest-pg14
     environment:
-      POSTGRES_DB: fraud_detection
+      POSTGRES_DB: traffic_detection
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:

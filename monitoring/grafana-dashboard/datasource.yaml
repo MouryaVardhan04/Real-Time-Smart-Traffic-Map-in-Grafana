@@ -8,7 +8,7 @@ datasources:
     secureJsonData:
       password: password
     jsonData:
-      database: fraud_detection
+      database: traffic_detection
       sslmode: "disable" # Enable SSL if your setup requires it
       maxOpenConns: 100 # Grafana v5.4+
       maxIdleConns: 100 # Grafana v5.4+

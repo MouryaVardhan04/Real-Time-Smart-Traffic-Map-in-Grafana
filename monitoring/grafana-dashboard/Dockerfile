@@ -1,7 +1,7 @@
 FROM grafana/grafana:11.2.0
 
 # Copy the exported dashboard JSON file
-COPY fraud_detection_dashboard.json /var/lib/grafana/dashboards/
+COPY traffic_detection_dashboard.json /var/lib/grafana/dashboards/
 
 # Copy the datasource configuration file
 COPY datasource.yaml /etc/grafana/provisioning/datasources/

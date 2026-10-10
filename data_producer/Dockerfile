@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir --trusted-host pypi.org --trusted-host files.pyth
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 
 # Add an argument to specify the Python script
-ARG script=normal_transaction_producer.py
+ARG script=normal_traffic_producer.py
 
 # Set an environment variable for the script
 ENV SCRIPT_NAME=${script}
@@ -25,5 +25,5 @@ ENV SCRIPT_NAME=${script}
 # Ensure the wait-for-it script is executable
 RUN chmod +x /usr/local/bin/wait-for-it.sh
 
-# Running wait-for-it.sh script first to ensure broker is available and live before script start producing transactions.
+# Running wait-for-it.sh script first to ensure the broker is available before the traffic generator starts.
 CMD ["sh", "-c", "/usr/local/bin/wait-for-it.sh broker 9092 -- python /app/${SCRIPT_NAME}"]

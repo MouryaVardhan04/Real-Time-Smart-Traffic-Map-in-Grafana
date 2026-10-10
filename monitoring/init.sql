@@ -1,22 +1,57 @@
-CREATE TABLE transactions (
-    transaction_id SERIAL PRIMARY KEY,       -- Auto-incrementing primary key
-    account_id INTEGER,                      -- Account ID, either 11111 or 22222
-    transaction_amount FLOAT,               -- Transaction amount
-    transaction_time TIMESTAMP,         -- Timestamp of the transaction
-    location VARCHAR,                        -- Location of the transaction
-    transaction_method VARCHAR,              -- Payment method (Credit Card, Bank Transfer, etc.)
-    account_age INTEGER,                     -- account age in days
-    transaction_hour INTEGER,                -- Hour of transaction
-    user_transactions_last_24h INTEGER,       -- transaction in last 24 hours
-    is_fraud BOOLEAN                         -- Indicator of whether the transaction is fraudulent
+CREATE TABLE road_metadata (
+    road_id INTEGER PRIMARY KEY,
+    road_name VARCHAR NOT NULL,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    city VARCHAR DEFAULT 'Bengaluru'
 );
 
-CREATE TABLE account_details (
-    account_id INTEGER PRIMARY KEY,   -- Unique account ID
-    signup_time TIMESTAMP             -- Signup time for the account
+CREATE TABLE traffic_events (
+    event_id VARCHAR PRIMARY KEY,
+    road_id INTEGER REFERENCES road_metadata(road_id),
+    road_name VARCHAR,
+    timestamp TIMESTAMP NOT NULL,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    vehicle_count INTEGER,
+    avg_speed_kmph DOUBLE PRECISION,
+    occupancy_pct DOUBLE PRECISION,
+    weather VARCHAR,
+    day_of_week VARCHAR,
+    hour_of_day INTEGER,
+    event_type VARCHAR,
+    source VARCHAR,
+    incident_type VARCHAR,
+    severity VARCHAR
 );
 
-INSERT INTO account_details (account_id, signup_time)
+CREATE TABLE traffic_predictions (
+    prediction_id SERIAL PRIMARY KEY,
+    road_id INTEGER REFERENCES road_metadata(road_id),
+    prediction_timestamp TIMESTAMP NOT NULL,
+    target_timestamp TIMESTAMP NOT NULL,
+    predicted_congestion VARCHAR,
+    prediction_confidence DOUBLE PRECISION,
+    model_version VARCHAR,
+    source VARCHAR
+);
+
+CREATE TABLE traffic_incidents (
+    incident_id SERIAL PRIMARY KEY,
+    road_id INTEGER REFERENCES road_metadata(road_id),
+    event_timestamp TIMESTAMP NOT NULL,
+    incident_type VARCHAR,
+    severity VARCHAR,
+    description TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    source VARCHAR
+);
+
+INSERT INTO road_metadata (road_id, road_name, latitude, longitude, city)
 VALUES
-(11111, TIMESTAMP '2022-09-18 14:35:22'),  -- Example random date 2 years ago
-(22222, TIMESTAMP '2021-08-05 09:15:37');  -- Another random date 3 years ago
+(1, 'Main Avenue', 12.9716, 77.5946, 'Bengaluru'),
+(2, 'Ring Road', 12.9650, 77.5836, 'Bengaluru'),
+(3, 'City Center Blvd', 12.9751, 77.5937, 'Bengaluru'),
+(4, 'Old Airport Road', 12.9862, 77.6060, 'Bengaluru'),
+(5, 'Tech Park Expressway', 12.9248, 77.6110, 'Bengaluru');
