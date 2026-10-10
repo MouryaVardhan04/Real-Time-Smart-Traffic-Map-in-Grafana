@@ -1,5 +1,5 @@
 # Use the existing Bitnami Spark image as the base
-FROM bitnami/spark:3.5.2
+FROM bitnamilegacy/spark:3.5.2
 
 # Install pip
 USER root
